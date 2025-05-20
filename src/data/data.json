@@ -1,0 +1,113 @@
+{
+  "Header": {
+    "title": "Premium Catering Services",
+    "paragraph": "From intimate gatherings to grand celebrations, we bring delicious experiences to your table."
+  },
+  "About": {
+    "paragraph": "At our catering service, we specialize in creating unforgettable culinary experiences. Whether you're hosting a wedding, corporate event, or a private gathering, our chefs and staff are dedicated to serving delicious, high-quality dishes with impeccable service.",
+    "Why": [
+      "Fresh and high-quality ingredients",
+      "Customizable menu options",
+      "Professional and friendly staff",
+      "Timely and reliable service",
+      "Affordable pricing for all events",
+      "Wide variety of cuisines available",
+      "Elegant presentation and setup",
+      "Satisfaction guaranteed"
+
+    ]
+    
+  },
+  "Gallery": [
+    {
+      "title": "Elegant Buffet Setup",
+      "largeImage": "img/portfolio/catering-01-large.jpg",
+      "smallImage": "img/portfolio/catering-01-small.jpg"
+    },
+    {
+      "title": "Delicious Desserts",
+      "largeImage": "img/portfolio/catering-02-large.jpg",
+      "smallImage": "img/portfolio/catering-02-small.jpg"
+    },
+    {
+      "title": "Corporate Event Catering",
+      "largeImage": "img/portfolio/catering-03-large.jpg",
+      "smallImage": "img/portfolio/catering-03-small.jpg"
+    },
+    {
+      "title": "Wedding Banquet",
+      "largeImage": "img/portfolio/catering-04-large.jpg",
+      "smallImage": "img/portfolio/catering-04-small.jpg"
+    }
+  ],
+
+  "Testimonials": [
+    {
+      "img": "img/testimonials/customer-01.jpg",
+      "text": "\"The food was absolutely delicious, and the service was outstanding. Our wedding guests couldn't stop raving about it!\"",
+      "name": "Emma & James"
+    },
+    {
+      "img": "img/testimonials/customer-02.jpg",
+      "text": "\"We hired them for our corporate event, and they exceeded our expectations. Professional service and amazing food!\"",
+      "name": "Michael Lee"
+    },
+    {
+      "img": "img/testimonials/customer-03.jpg",
+      "text": "\"The catering team was friendly and attentive, and the dishes were incredible. Highly recommend!\"",
+      "name": "Sarah Johnson"
+    }
+  ],
+  "Team": [
+    {
+      "img": "img/team/chef-01.jpg",
+      "name": "David Williams",
+      "job": "Executive Chef"
+    },
+    {
+      "img": "img/team/chef-02.jpg",
+      "name": "Sophia Martinez",
+      "job": "Pastry Chef"
+    },
+    {
+      "img": "img/team/chef-03.jpg",
+      "name": "Lucas Brown",
+      "job": "Event Coordinator"
+    },
+    {
+      "img": "img/team/chef-04.jpg",
+      "name": "Emily Clark",
+      "job": "Head Waitstaff"
+    }
+  ],
+  "Contact": {
+    "address": "1234 Gourmet St, Food City, FC 56789",
+    "phone": "+1 987 654 3210",
+    "email": "info@cateringcompany.com",
+    "facebook": "facebook.com/cateringcompany",
+    "twitter": "twitter.com/cateringcompany",
+    "youtube": "youtube.com/cateringcompany"
+  },
+  "Features": [
+    {
+      "icon": "fa fa-check",
+      "title": "High-Quality Ingredients",
+      "text": "We use only the freshest and finest ingredients to create mouth-watering dishes."
+    },
+    {
+      "icon": "fa fa-clock",
+      "title": "Timely Service",
+      "text": "Punctual and efficient catering to ensure a seamless event experience."
+    },
+    {
+      "icon": "fa fa-star",
+      "title": "Expert Chefs",
+      "text": "Our chefs are skilled professionals with years of culinary expertise."
+    },
+    {
+      "icon": "fa fa-glass-cheers",
+      "title": "Event Customization",
+      "text": "We tailor our services to match the theme and requirements of your event."
+    }
+  ]
+}

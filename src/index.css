@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Vollkorn:wght@400;700&display=swap");
+
+:root {
+  font-family: "Vollkorn", serif;
+  line-height: 1.6;
+  font-weight: 400;
+  --primary-gold: hsl(39, 69%, 57%);
+  --background-color: #ffcdcd;
+  --text-color: #000000;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: "Vollkorn", serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  transition: background-color 0.3s ease-in-out;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
