@@ -47,7 +47,6 @@ const AssignedWorkTable = () => {
     isLoading,
     mutate,
   } = useSWR("/user/admin/assign-work/list/");
-  console.log(!isLoading && assignedWorks, "assignedWorks");
 
   const handleRemove = async (id) => {
     try {
@@ -62,7 +61,7 @@ const AssignedWorkTable = () => {
       }
     } catch (error) {
       setToast({
-        message: error.response?.data?.error || "Failed to delete work.",
+        message: error.response?.data?.error || "Failed to delete Assignment.",
         type: "error",
         open: true,
       });

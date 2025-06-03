@@ -13,7 +13,7 @@ const SupervisorRemove = ({ id, handleClose, mutate }) => {
     e.preventDefault();
     try {
       let response = await api.delete(`/user/admin/user/${id}/`);
-      if (response.status === 200) {
+      if (response.status === 204) {
         mutate();
         handleClose();
         setToast({

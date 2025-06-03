@@ -41,7 +41,6 @@ const validationSchema = yup.object().shape({
 const eventTypes = [
   { value: "corporate", label: "Corporate" },
   { value: "wedding", label: "Wedding" },
-  { value: "private", label: "Private" },
   { value: "other", label: "Other" },
 ];
 
@@ -71,7 +70,6 @@ const WorkItemForm = ({ initialValues, isEdit = false, mutate }) => {
     defaultValues: initialValues || defaultValues,
     resolver: yupResolver(validationSchema),
   });
-  console.log(watch());
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { setToast } = useToast();
@@ -152,7 +150,6 @@ const WorkItemForm = ({ initialValues, isEdit = false, mutate }) => {
     try {
       let res = await axios.get(`/user/admin/catering-work/update/${id}`);
       const data = res.data;
-      console.log(data);
 
       Object.keys(defaultValues).forEach((key) => {
         if (data[key] !== undefined) {

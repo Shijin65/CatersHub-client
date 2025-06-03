@@ -140,7 +140,6 @@ const ProfileForm = () => {
   });
 
 
-  console.log(watch())
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -171,7 +170,6 @@ const ProfileForm = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(data,'data')
     try {
       const {
         name,

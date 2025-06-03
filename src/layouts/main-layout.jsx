@@ -27,6 +27,7 @@ import {
   Instagram,
   YouTube,
   Logout,
+  AssignmentInd,
 } from "@mui/icons-material";
 
 import { useMediaQuery } from "@mui/material";
@@ -115,7 +116,7 @@ const MainLayout = () => {
           <div className="max-w-[1440px] mx-auto flex items-center justify-between flex-wrap gap-y-4">
             {/* Left: Logo & Company Name */}
             <div className="flex items-center space-x-4">
-              <img src={Logo} alt="Logo" className="h-12 w-auto" />
+              <img src={Logo} alt="Logo" className="h-14 w-auto" />
               <div>
                 <h1 className="text-lg font-bold text-[var(--primary-gold)] font-serif">
                   CATERS HUB
@@ -235,6 +236,19 @@ const MainLayout = () => {
                   <ListItemText primary="Upcoming Works" />
                 </ListItemButton>
               </ListItem>
+
+              {!isAdmin && <ListItem key="user-assigned-works" disablePadding>
+                <ListItemButton
+                  component={Link}
+                  to={"/user-assigned-works"}
+                  selected={location.pathname === "/user-assigned-works"}
+                >
+                  <ListItemIcon>
+                    <AssignmentInd className="w-5 h-5" />
+                  </ListItemIcon>
+                  <ListItemText primary="Assigned Works" />
+                </ListItemButton>
+              </ListItem>}
 
               {authMenuItems.map((item) => (
                 <ListItem key={item.title} disablePadding>

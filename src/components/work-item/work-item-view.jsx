@@ -47,10 +47,16 @@ const WorkItemPage = () => {
   useEffect(() => {
     const fetchAssignment = async () => {
       try {
-        const res = await axios.get(`/user/work-assignments/${id}/`);
-        setAssignment(res.data);
+        const res = await axios.get(`/user/admin/assign-work/list/`);
+        if (res) {
+          const assign = res.data.find(
+            (item) => String(item.catering_work) === String(id)
+          );
+
+          setAssignment(assign ? assign : null);
+        }
       } catch (err) {
-       console.log(err)
+        console.log(err);
       } finally {
         setAssignmentLoading(false);
       }
@@ -58,7 +64,6 @@ const WorkItemPage = () => {
 
     fetchAssignment();
   }, [id]);
-console.log(assignment)
   if (workLoading || assignmentLoading) return <GlobalLoader loading />;
   if (workError)
     return (
@@ -66,7 +71,12 @@ console.log(assignment)
         Error loading data. Please try again later.
       </p>
     );
-  if (!work) return <p className="p-4 text-red-500"><ErrorCard/></p>;
+  if (!work)
+    return (
+      <p className="p-4 text-red-500">
+        <ErrorCard />
+      </p>
+    );
 
   return (
     <div className="max-w-full md:max-w-[80%] mx-auto p-6 bg-gray-100 shadow rounded-2xl space-y-6">
@@ -131,13 +141,20 @@ console.log(assignment)
 
       {/* Assigned Staff & Supervisor */}
       <Section title="Assigned Staff & Supervisor">
+        {assignment && (
+          <div>
+            <Detail label="title" value={assignment?.title} />
+            <Detail label="deadline" value={assignment?.deadline} />
+            <Detail label="description" value={assignment?.description} />
+          </div>
+        )}
         {/* Supervisor */}
-        {assignment?.supervisor ? (
+        {assignment?.supervisor_name ? (
           <div className="col-span-2">
             <p className="text-sm text-gray-500 mb-1">Supervisor</p>
             <div className="flex items-center gap-2">
               <span className="text-base text-gray-800">
-                {assignment.supervisor}
+                {assignment.supervisor_name}
               </span>
               {assignment.supervisor_status && (
                 <Chip
@@ -198,8 +215,16 @@ console.log(assignment)
       </div>
 
       {/* Modal */}
-      <Modal isOpen={openModal} handleClose={handleClose} title="Assign Supervisor & Staff">
-        <WorkItemAssign workId={id} handleClose={handleClose} mutateWork={mutateWork} />
+      <Modal
+        isOpen={openModal}
+        handleClose={handleClose}
+        title="Assign Supervisor & Staff"
+      >
+        <WorkItemAssign
+          workId={assignment ? assignment.id : null}
+          handleClose={handleClose}
+          mutateWork={mutateWork}
+        />
       </Modal>
     </div>
   );

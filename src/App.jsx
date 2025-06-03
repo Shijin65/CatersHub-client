@@ -20,6 +20,7 @@ import StaffEditPage from "./pages/staff/edit";
 import SupervisorViewPage from "./pages/supervisor/view";
 import SupervisorEditPage from "./pages/supervisor/edit";
 import UpcomingWorkPage from "./pages/upcoming-works";
+import UserAssignedWorks from "./pages/user-assigned-workes";
 
 function App() {
   const user = useUserStore((state) => state.user);
@@ -49,7 +50,8 @@ function App() {
               <Route path=":id/view" element={<SupervisorViewPage />} />
               <Route path=":id/edit" element={<SupervisorEditPage />} />
             </Route>
-
+            
+            <Route path="/user-assigned-works" element={<UserAssignedWorks />} />
             <Route path="/assigned-works" element={<AssignedWorks />} />
             <Route path="/upcoming-works" element={<UpcomingWorkPage />} />
 

@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Button, CircularProgress } from "@mui/material";
+import { Button } from "@mui/material";
+import useSWR, { mutate } from "swr";
 import { useToast } from "../../lib/store";
 import { useAxios } from "../../lib/hooks";
 import { GlobalLoader } from "../ui";
+
+const fetcher = (api) => (url) => api.get(url).then((res) => res.data);
 
 const UserView = () => {
   const api = useAxios();
@@ -11,14 +14,17 @@ const UserView = () => {
   const { id } = useParams();
   const { setToast } = useToast();
 
-  const [user, setUser] = useState(null);
-
-  const [notUpdated, setNotUpdated] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState(false);
 
   const location = useLocation();
   const basePath = location.pathname.split("/")[1];
+
+  const {
+    data: user,
+    error,
+    isLoading,
+    mutate
+  } = useSWR(`/user/admin/user/${id}/`);
 
   const handleEdit = () => {
     navigate(`/${basePath}/${id}/edit`);
@@ -27,13 +33,15 @@ const UserView = () => {
   const handleApprove = async () => {
     try {
       setApproving(true);
-      const email = user?.email;
-      await api.post("/user/approve-user/", { email });
+      await api.post("/user/approve-user/", { email: user?.email });
+
       setToast({
-        message: "User approved Successfully.",
+        message: "User approved successfully.",
         type: "success",
         open: true,
       });
+
+      mutate(); 
     } catch (error) {
       console.error("Approve error:", error);
       setToast({
@@ -46,57 +54,25 @@ const UserView = () => {
     }
   };
 
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const res = await api.get(`/user/admin/user/${id}/`);
-
-        if (res.status === 200) {
-          const user = res.data;
-          if (user) {
-            setUser(user);
-          } else {
-            setToast({
-              message: "User not found.",
-              type: "error",
-              open: true,
-            });
-          }
-        }
-      } catch (error) {
-        if (error.response?.status === 404) {
-          setNotUpdated(true);
-        } else {
-          console.error("Unexpected error:", error);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getUser();
-  }, [id]);
-
-  if (loading) return <GlobalLoader loading={loading} />;
-
+  if (isLoading) return <GlobalLoader loading />;
+  if (error) return <div className="text-red-600">Failed to load user.</div>;
   if (!user) return <div>User not found</div>;
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
-      {/* User Basic Info */}
+      {/* Account Info */}
       <section className="mb-10">
         <h2 className="text-2xl font-semibold mb-4 border-b pb-2">
           Account Info
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
           <p>
-            <span className="font-semibold">Username:</span>
+            <span className="font-semibold">Username:</span>{" "}
             {user.user_name || "-"}
           </p>
           <p>
             <span className="font-semibold">Email:</span> {user.email}
           </p>
-
           <p>
             <span className="font-semibold">Role:</span> {user.role || "-"}
           </p>
@@ -132,7 +108,6 @@ const UserView = () => {
                   </div>
                 )}
               </div>
-
               <div className="space-y-2 text-gray-700">
                 <p>
                   <span className="font-semibold">Name:</span>{" "}
@@ -177,19 +152,19 @@ const UserView = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
               <p>
                 <span className="font-semibold">White Shirt:</span>{" "}
-                {user.staff_details?.white_shirt ? "Yes" : "No"}
+                {user.staff_details.white_shirt ? "Yes" : "No"}
               </p>
               <p>
                 <span className="font-semibold">Black Pant:</span>{" "}
-                {user.staff_details?.black_pant ? "Yes" : "No"}
+                {user.staff_details.black_pant ? "Yes" : "No"}
               </p>
               <p>
                 <span className="font-semibold">Executive Black Shoe:</span>{" "}
-                {user.staff_details?.executive_black_shoe ? "Yes" : "No"}
+                {user.staff_details.executive_black_shoe ? "Yes" : "No"}
               </p>
               <p>
                 <span className="font-semibold">Grooming:</span>{" "}
-                {user.staff_details?.grooming ? "Yes" : "No"}
+                {user.staff_details.grooming ? "Yes" : "No"}
               </p>
             </div>
           </section>
@@ -199,24 +174,23 @@ const UserView = () => {
       )}
 
       {/* Uniform Images */}
-      {user.staff_details?.uniform_images &&
-        user.staff_details?.uniform_images.length > 0 && (
-          <section className="mb-10">
-            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">
-              Uniform Images
-            </h2>
-            <div className="flex flex-wrap gap-4">
-              {user.staff_details?.uniform_images.map((img, idx) => (
-                <img
-                  key={idx}
-                  src={img}
-                  alt={`Uniform ${idx + 1}`}
-                  className="w-40 h-40 object-cover rounded border"
-                />
-              ))}
-            </div>
-          </section>
-        )}
+      {user.staff_details?.uniform_images?.length > 0 && (
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4 border-b pb-2">
+            Uniform Images
+          </h2>
+          <div className="flex flex-wrap gap-4">
+            {user.staff_details.uniform_images.map((img, idx) => (
+              <img
+                key={idx}
+                src={img}
+                alt={`Uniform ${idx + 1}`}
+                className="w-40 h-40 object-cover rounded border"
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Action Buttons */}
       <div className="flex flex-wrap gap-4 justify-end mt-10">
@@ -227,7 +201,7 @@ const UserView = () => {
           variant="contained"
           color="success"
           onClick={handleApprove}
-          disabled={user.is_approved || approving }
+          disabled={user.is_approved || approving}
         >
           {approving ? "Approving..." : "Approve"}
         </Button>

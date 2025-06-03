@@ -1,40 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useAxios } from "../../lib/hooks";
+import { Skeleton } from "@mui/material";
 
 const UpcomingWorks = () => {
   const axios = useAxios();
 
   const [assignments, setAssignments] = useState([]);
-  const [statuses, setStatuses] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchAssignment = async () => {
       try {
         const { data } = await axios.get(`/user/work-assignment/upcoming/`);
         setAssignments(data);
-        console.log(data);
       } catch (error) {
         console.error("Failed to fetch assignments", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchAssignment();
   }, []);
 
-  const handleStatusChange = (assignmentId, newStatus) => {
-    setStatuses((prevStatuses) => ({
-      ...prevStatuses,
-      [assignmentId]: newStatus,
-    }));
-  };
-
-  const isUserAssigned = (assignment) => {
-    return assignment.supervisor_id === user?.id;
-  };
-
+  if (isLoading)
+    return (
+      <div className="min-h-[200px] text-center flex flex-col gap-2 p-2">
+        <Skeleton variant="rectangular" height={100} />
+        <Skeleton variant="rectangular" height={100} />
+        <Skeleton variant="rectangular" height={100} />
+      </div>
+    );
   return (
     <div>
-      { assignments?.map((assignment) => (
+      {assignments?.map((assignment) => (
         <div
           key={assignment.id}
           className="rounded-xl border p-4 shadow-sm bg-white mb-4"
@@ -45,33 +44,11 @@ const UpcomingWorks = () => {
             Deadline: {new Date(assignment.deadline).toLocaleString()}
           </p>
           <p className="text-sm text-gray-500">
-            Created: {new Date(assignment.created_at).toLocaleString()}
+            Created: {assignment.created_at}
           </p>
           <p className="text-sm text-gray-500">
             Supervisor: {assignment.supervisor_name || "Not Assigned"}
           </p>
-
-          <div className="mt-4 flex items-center gap-3">
-            <span className="font-medium">
-              Status:{" "}
-              <span className="capitalize">
-                {statuses[assignment.id] || "pending"}
-              </span>
-            </span>
-
-            <button
-              className="px-3 py-1 bg-green-500 text-white rounded-md"
-              onClick={() => handleStatusChange(assignment.id, "accepted")}
-            >
-              Accept
-            </button>
-            <button
-              className="px-3 py-1 bg-red-500 text-white rounded-md"
-              onClick={() => handleStatusChange(assignment.id, "denied")}
-            >
-              Deny
-            </button>
-          </div>
         </div>
       ))}
     </div>

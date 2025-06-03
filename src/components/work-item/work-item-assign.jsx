@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { CustomButton, GlobalLoader } from "../ui";
 import { AutoCompleteMultiple } from "../ui/auto-complete-multiple";
-import { MenuItem, TextField } from "@mui/material";
+import { CircularProgress, MenuItem, TextField } from "@mui/material";
 import { useAxios } from "../../lib/hooks";
 import { grey } from "@mui/material/colors";
 import { useParams } from "react-router-dom";
@@ -125,7 +125,7 @@ const WorkItemAssign = ({ handleClose, workId, mutateWork }) => {
   };
 
   if (loading) {
-    return <GlobalLoader loading={loading} />;
+    return <div className="w-full flex justify-center"><CircularProgress /></div>
   }
 
   return (

@@ -39,20 +39,20 @@ export default function BasicTable({
     ? headCells.filter((item) => item.id !== "remove")
     : headCells;
 
-  let rowFilter = (key) => key !== "approveStatus";
+  let rowFilter = (key) => key !== "approveStatus" && key != "id";
 
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow sx={{ backgroundColor: grey[300] }}>
-            {headCells.map((head) => (
+            {headCells?.map((head) => (
               <TableCell>{head.title}</TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows?.map((row, index) => (
             <TableRow
               hover
               key={row.id}
@@ -63,6 +63,9 @@ export default function BasicTable({
                 "&:last-child td, &:last-child th": { border: 0 },
               }}
             >
+              <TableCell key={index} component="th" scope="row">
+                {index + 1}
+              </TableCell>
               {Object.keys(row)
                 .filter(rowFilter)
                 .map((val, index) => {
@@ -103,7 +106,6 @@ export default function BasicTable({
                   <Button
                     onClick={() => handleView(row.id)}
                     size="small"
-                    // variant="contained"
                     color="success"
                   >
                     <EyeIcon className="h-5 w-5" />
@@ -116,7 +118,6 @@ export default function BasicTable({
                   <Button
                     onClick={() => handleRemove(row.id)}
                     size="small"
-                    // variant="contained"
                     color="error"
                   >
                     <TrashIcon className="h-5 w-5" />

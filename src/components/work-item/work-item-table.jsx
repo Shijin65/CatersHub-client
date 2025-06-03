@@ -42,7 +42,6 @@ const WorkItemTable = () => {
     isLoading,
     mutate,
   } = useSWR("/user/admin/catering-work/create/");
-  console.log(!isLoading && workItems, "workItems");
 
   const handleAssign = async (id) => {
 setWorkId(id)
@@ -115,8 +114,6 @@ setOpenModal(true)
         columns={columns}
         canView={true}
         canRemove={true}
-        assignButton={true}
-        handleAssign={handleAssign}
         handleRemove={handleRemove}
         handleView={(id) => {
           navigate(`/work-item/${id}/view`);
