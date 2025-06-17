@@ -43,29 +43,6 @@ const WorkItemTable = () => {
     mutate,
   } = useSWR("/user/admin/catering-work/create/");
 
-  const handleAssign = async (id) => {
-setWorkId(id)
-setOpenModal(true)
-    try {
-      // const res = await axios.post("/user/approve-user/", {
-      //   email: row.email,
-      // });
-      // if (res.status === 200) {
-      //   setToast({
-      //     message: "supervisor approved successfully.",
-      //     type: "success",
-      //     open: true,
-      //   });
-      //   mutate();
-      // }
-    } catch (error) {
-      setToast({
-        message: error.response?.data?.error || "Failed to approve user.",
-        type: "error",
-        open: true,
-      });
-    }
-  };
 
   const handleRemove = async (id) => {
     try {

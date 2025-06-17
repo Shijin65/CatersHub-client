@@ -38,8 +38,13 @@ const UserAssignedWorkTable = () => {
         ? `/user/work-assign/${id}/supervisor-status/`
         : `/user/work-assign/${id}/staff-status/`;
 
+    const payload =
+      user.role === "supervisor"
+        ? { supervisor_status: status }
+        : { status: status };
+
     try {
-      const res = await axios.patch(endpoint, { status }); // status: "approved"/"denied"
+      const res = await axios.patch(endpoint, payload);
       if (res.status === 200) {
         setToast({
           message: `Work ${status} successfully.`,

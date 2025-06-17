@@ -50,7 +50,7 @@ const AssignedWorkTable = () => {
 
   const handleRemove = async (id) => {
     try {
-      const res = await axios.delete(`/user/admin/catering-work/update/${id}/`);
+      const res = await axios.delete(`/user/work-assignments/${id}/`);
       if (res.status === 204) {
         setToast({
           message: "Work deleted successfully.",
@@ -101,7 +101,11 @@ const AssignedWorkTable = () => {
         handleView={handleView}
       />
       <div>
-        <Modal isOpen={openModal} handleClose={handleClose} title="Assigned Work Details">
+        <Modal
+          isOpen={openModal}
+          handleClose={handleClose}
+          title="Assigned Work Details"
+        >
           <WorkItemAssignView data={selectedRow} handleClose={handleClose} />
         </Modal>
       </div>

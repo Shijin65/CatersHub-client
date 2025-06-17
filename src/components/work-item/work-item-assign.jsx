@@ -2,17 +2,27 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { CustomButton, GlobalLoader } from "../ui";
 import { AutoCompleteMultiple } from "../ui/auto-complete-multiple";
-import { CircularProgress, MenuItem, TextField } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import { useAxios } from "../../lib/hooks";
 import { grey } from "@mui/material/colors";
 import { useParams } from "react-router-dom";
 import { useToast } from "../../lib/store";
 
-const WorkItemAssign = ({ handleClose, workId, mutateWork }) => {
+const WorkItemAssign = ({ handleClose, workId, mutateWork, district }) => {
   const { id } = useParams();
-  const {setToast} = useToast()
+  const { setToast } = useToast();
 
-  const { control, handleSubmit, reset } = useForm({
+  const { control, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       title: "",
       description: "",
@@ -26,8 +36,45 @@ const WorkItemAssign = ({ handleClose, workId, mutateWork }) => {
   const [staffList, setStaffList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isAddMode, setIsAddMode] = useState(true);
+  const [autoPick, setAutoPick] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const axios = useAxios();
+
+  const onSubmit = async (data) => {
+    try {
+      const payload = {
+        catering_work: parseInt(id),
+        title: data.title,
+        description: data.description,
+        deadline: data.deadline,
+        supervisor: data.supervisor || null,
+        staff_members: data.staff?.map((s) => s.id) || [],
+      };
+
+      if (isAddMode) {
+        await axios.post(`/user/work-assign/`, payload);
+      } else {
+        await axios.patch(`/user/work-assignments/${workId}/`, payload);
+      }
+      mutateWork();
+
+      setToast({
+        message: "Work Assignment successfully.",
+        type: "success",
+        open: true,
+      });
+
+      handleClose();
+    } catch (error) {
+      setToast({
+        message: "Failed to assign work.",
+        type: "error",
+        open: true,
+      });
+      console.error("Error submitting form:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -43,7 +90,7 @@ const WorkItemAssign = ({ handleClose, workId, mutateWork }) => {
           .map((sup) => ({
             label: sup.user_name || "Supervisor",
             value: sup.id,
-            email: sup.email, // used for mapping
+            email: sup.email,
           }));
 
         const staffOptions = staffRes.data
@@ -56,7 +103,6 @@ const WorkItemAssign = ({ handleClose, workId, mutateWork }) => {
         setSupervisors(supervisorOptions);
         setStaffList(staffOptions);
 
-        // If editing, fetch assignment data
         if (workId) {
           const { data } = await axios.get(`/user/work-assignments/${workId}/`);
 
@@ -68,7 +114,7 @@ const WorkItemAssign = ({ handleClose, workId, mutateWork }) => {
 
             const matchedStaff = data.staff_members
               .map((sm) => staffOptions.find((s) => s.id === sm.id))
-              .filter(Boolean); // remove nulls
+              .filter(Boolean);
 
             reset({
               title: data.title,
@@ -89,43 +135,12 @@ const WorkItemAssign = ({ handleClose, workId, mutateWork }) => {
     fetchInitialData();
   }, [workId]);
 
-  const onSubmit = async (data) => {
-    try {
-      const payload = {
-        catering_work: parseInt(id),
-        title: data.title,
-        description: data.description,
-        deadline: data.deadline,
-        supervisor: data.supervisor || null,
-        staff_members: data.staff?.map((s) => s.id) || [],
-      };
-
-      if (isAddMode) {
-        await axios.post(`/user/work-assign/`, payload);
-      } else {
-        await axios.patch(`/user/work-assignments/${workId}/`, payload);
-      }
-      mutateWork();
-      
-      setToast({
-        message: "Work Assignment successfully.",
-        type: "success",
-        open: true,
-      });
-      
-      handleClose();
-    } catch (error) {
-      setToast({
-        message: "Failed to assign work.",
-        type: "error",
-        open: true,
-      });
-      console.error("Error submitting form:", error);
-    }
-  };
-
   if (loading) {
-    return <div className="w-full flex justify-center"><CircularProgress /></div>
+    return (
+      <div className="w-full flex justify-center">
+        <CircularProgress />
+      </div>
+    );
   }
 
   return (
@@ -270,8 +285,27 @@ const WorkItemAssign = ({ handleClose, workId, mutateWork }) => {
             </div>
           )}
         />
-
+        {/* Auto pick staff */}
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            checked={autoPick}
+            onChange={(e) => {
+              const checked = e.target.checked;
+              if (checked) {
+                setConfirmOpen(true);
+              } else {
+                setAutoPick(false);
+                reset((prev) => ({ ...prev, staff: [] }));
+              }
+            }}
+            size="small"
+          />
+          <label className="text-sm text-gray-600">
+            Auto-pick staff by district
+          </label>
+        </div>
         {/* Staff */}
+
         <Controller
           name="staff"
           control={control}
@@ -281,14 +315,17 @@ const WorkItemAssign = ({ handleClose, workId, mutateWork }) => {
               <label className="text-sm text-gray-600 block">
                 Staff <span className="text-red-500">*</span>
               </label>
-              <AutoCompleteMultiple
-                {...field}
-                options={staffList}
-                getOptionLabel={(option) => option.name}
-                isOptionEqualToValue={(o, v) => o.id === v.id}
-                error={!!fieldState.error}
-                helperText={fieldState.error?.message}
-              />
+              <div className="flex w-full items-center">
+                <AutoCompleteMultiple
+                  {...field}
+                  fullWidth
+                  options={staffList}
+                  getOptionLabel={(option) => option.name}
+                  isOptionEqualToValue={(o, v) => o.id === v.id}
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                />
+              </div>
             </div>
           )}
         />
@@ -307,6 +344,48 @@ const WorkItemAssign = ({ handleClose, workId, mutateWork }) => {
             Assign
           </CustomButton>
         </div>
+        <Dialog
+          className="rounded-2xl"
+          open={confirmOpen}
+          onClose={() => setConfirmOpen(false)}
+        >
+          <DialogTitle>Auto-Pick Staff</DialogTitle>
+          <DialogContent>
+            <p className="text-sm text-gray-700">
+              Do you want to automatically assign staff based on the work's
+              district?
+            </p>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setConfirmOpen(false)} color="error">
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                try {
+                  const res = await axios.get(`/user/staffs/by-district/`, {
+                    params: { district: district },
+                  });
+
+                  const autoPickedStaff = res.data.map((staff) => ({
+                    name: staff.name || "Staff",
+                    id: staff.user_id,
+                  }));
+                  reset((prev) => ({ ...prev, staff: autoPickedStaff }));
+                  setAutoPick(true);
+                } catch (err) {
+                  console.error("Auto-pick error", err);
+                } finally {
+                  setConfirmOpen(false);
+                }
+              }}
+              variant="contained"
+              color="primary"
+            >
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
       </form>
     </div>
   );

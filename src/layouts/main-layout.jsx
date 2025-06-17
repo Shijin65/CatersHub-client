@@ -36,13 +36,15 @@ import { useUserStore } from "../lib/store";
 import {
   BriefcaseIcon,
   ClipboardDocumentListIcon,
-  UserCircleIcon,
+  DocumentPlusIcon,
   UserIcon,
   UsersIcon,
 } from "@heroicons/react/24/solid";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import { useAxios } from "../lib/hooks/useAxios";
 import ViewProfile from "../components/profile/profile-view";
+import { BellAlertIcon } from "@heroicons/react/24/outline";
+import NotificationList from "../components/Home/notification";
 const drawerWidth = 240;
 
 const navItems = [
@@ -70,11 +72,17 @@ const adminMenuItems = [
     icon: ClipboardDocumentListIcon,
     path: "/assigned-works",
   },
+  {
+    title: "Works Requests",
+    icon: DocumentPlusIcon,
+    path: "/work-requests",
+  },
 ];
 const MainLayout = () => {
   const [open, setOpen] = useState(false);
   const [authMenuItems, setAuthMenuItems] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [modalInfo, setModalInfo] = useState(false);
   const location = useLocation();
   const user = useUserStore((state) => state.user);
   const removeUser = useUserStore((state) => state.removeUser);
@@ -98,11 +106,17 @@ const MainLayout = () => {
     }
   }, [isAdmin]);
 
-  const handleOpen = () => {
+  const handleOpen = (type) => {
+    if (type === "profileView") {
+      setModalInfo({ title: "PROFILE", type });
+    } else {
+      setModalInfo({ title: "NOTIFICATIONS", type });
+    }
     setOpenModal(true);
   };
 
   const handleClose = () => {
+    setModalInfo();
     setOpenModal(false);
   };
 
@@ -158,6 +172,12 @@ const MainLayout = () => {
               >
                 <YouTube />
               </a>
+              <div>
+                <BellAlertIcon
+                  onClick={() => handleOpen("notification")}
+                  className="w-5 h-5 text-[var(--primary-gold)] hover:scale-110 transition"
+                />
+              </div>
               <div className="flex gap-2">
                 {!isRegisterPage && !user && (
                   <Button
@@ -216,7 +236,7 @@ const MainLayout = () => {
           >
             <List>
               <ListItem key="profile-edit" disablePadding>
-                <ListItemButton onClick={handleOpen}>
+                <ListItemButton onClick={() => handleOpen("profileView")}>
                   <ListItemIcon>
                     <UserIcon className="w-5 h-5" />
                   </ListItemIcon>
@@ -237,18 +257,20 @@ const MainLayout = () => {
                 </ListItemButton>
               </ListItem>
 
-              {!isAdmin && <ListItem key="user-assigned-works" disablePadding>
-                <ListItemButton
-                  component={Link}
-                  to={"/user-assigned-works"}
-                  selected={location.pathname === "/user-assigned-works"}
-                >
-                  <ListItemIcon>
-                    <AssignmentInd className="w-5 h-5" />
-                  </ListItemIcon>
-                  <ListItemText primary="Assigned Works" />
-                </ListItemButton>
-              </ListItem>}
+              {!isAdmin && (
+                <ListItem key="user-assigned-works" disablePadding>
+                  <ListItemButton
+                    component={Link}
+                    to={"/user-assigned-works"}
+                    selected={location.pathname === "/user-assigned-works"}
+                  >
+                    <ListItemIcon>
+                      <AssignmentInd className="w-5 h-5" />
+                    </ListItemIcon>
+                    <ListItemText primary="Assigned Works" />
+                  </ListItemButton>
+                </ListItem>
+              )}
 
               {authMenuItems.map((item) => (
                 <ListItem key={item.title} disablePadding>
@@ -285,9 +307,19 @@ const MainLayout = () => {
           </Box>
         </Drawer>
         <div>
-          <Modal isOpen={openModal} handleClose={handleClose} title="PROFILE">
-            <ViewProfile handleClose={handleClose} />
-          </Modal>
+          {modalInfo && (
+            <Modal
+              isOpen={openModal}
+              handleClose={handleClose}
+              title={modalInfo.title}
+            >
+              {modalInfo.type === "profileView" ? (
+                <ViewProfile handleClose={handleClose} />
+              ) : (
+                <NotificationList />
+              )}
+            </Modal>
+          )}
         </div>
         <main
           className="h-full"

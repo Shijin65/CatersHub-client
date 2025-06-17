@@ -49,6 +49,7 @@ const defaultValues = {
   event_type: "",
   event_date: "",
   location: "",
+  district:"",
   staff_required: 0,
   contact_person: "",
   contact_number: "",
@@ -311,6 +312,30 @@ const WorkItemForm = ({ initialValues, isEdit = false, mutate }) => {
                       >
                         <>
                           Location&nbsp;
+                          <span style={{ color: "red" }}>*</span>
+                        </>
+                      </label>
+                      <br />
+                      <CustomInputField
+                        {...field}
+                        error={!!error}
+                        helperText={error ? error?.message : ""}
+                      />
+                    </div>
+                  )}
+                />
+
+                <Controller
+                  name="district"
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <div>
+                      <label
+                        htmlFor="district"
+                        className="text-sm text-gray-600"
+                      >
+                        <>
+                          District&nbsp;
                           <span style={{ color: "red" }}>*</span>
                         </>
                       </label>

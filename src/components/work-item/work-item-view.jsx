@@ -63,7 +63,7 @@ const WorkItemPage = () => {
     };
 
     fetchAssignment();
-  }, [id]);
+  }, [openModal, id]);
   if (workLoading || assignmentLoading) return <GlobalLoader loading />;
   if (workError)
     return (
@@ -123,6 +123,7 @@ const WorkItemPage = () => {
         <Detail label="Contact Person" value={work.contact_person} />
         <Detail label="Contact Number" value={work.contact_number} />
         <Detail label="Location" value={work.location} />
+        <Detail label="District" value={work.district} />
       </Section>
 
       {/* Requirements */}
@@ -224,6 +225,7 @@ const WorkItemPage = () => {
           workId={assignment ? assignment.id : null}
           handleClose={handleClose}
           mutateWork={mutateWork}
+          district={work.district}
         />
       </Modal>
     </div>

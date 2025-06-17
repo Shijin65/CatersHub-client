@@ -21,6 +21,7 @@ import SupervisorViewPage from "./pages/supervisor/view";
 import SupervisorEditPage from "./pages/supervisor/edit";
 import UpcomingWorkPage from "./pages/upcoming-works";
 import UserAssignedWorks from "./pages/user-assigned-workes";
+import WorkRequestPage from "./pages/user-work-request";
 
 function App() {
   const user = useUserStore((state) => state.user);
@@ -39,6 +40,8 @@ function App() {
           <Route element={<ProtectedRoute isAllowed={!!user} />}>
             <Route path="/dash-board" element={<DashBoard />} />
 
+            <Route path="/work-requests" element={<WorkRequestPage />} />
+
             <Route path="/staff">
               <Route index element={<Staff />} />
               <Route path=":id/view" element={<StaffViewPage />} />
@@ -50,8 +53,11 @@ function App() {
               <Route path=":id/view" element={<SupervisorViewPage />} />
               <Route path=":id/edit" element={<SupervisorEditPage />} />
             </Route>
-            
-            <Route path="/user-assigned-works" element={<UserAssignedWorks />} />
+
+            <Route
+              path="/user-assigned-works"
+              element={<UserAssignedWorks />}
+            />
             <Route path="/assigned-works" element={<AssignedWorks />} />
             <Route path="/upcoming-works" element={<UpcomingWorkPage />} />
 

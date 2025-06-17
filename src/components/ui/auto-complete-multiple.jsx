@@ -23,13 +23,11 @@ export const AutoCompleteMultiple = forwardRef(function AC(props, ref) {
     limitTags = 2,
     ...restProps
   } = props;
-
   const id = useId();
 
   const handleChange = (event, selectedValues) => {
     onChange?.(selectedValues);
   };
-
   return (
     <Autocomplete
       multiple
